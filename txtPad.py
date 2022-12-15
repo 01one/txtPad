@@ -7,7 +7,7 @@ from pygame.locals import*
 pygame.init()
 clock=pygame.time.Clock()
 w=1000
-h=600
+h=650
 
 
 screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
@@ -37,16 +37,14 @@ except:
 
 txt=all_data[0]
 font_size=all_data[1]
-text_line_height=0
-total_text_line_height=0
-
-total_page=0
-n=0
 pygame.mouse.set_visible(1)
 writing=True
 
 
-
+TOTAL_PAGE_NUMBER=1
+CURRENT_PAGE=TOTAL_PAGE_NUMBER
+RENDER_LINE_HEIGHT=100
+START_LINE=1
 class TextView():
 	def __init__(self,screen,text='',t_x=0,t_y=0,t_w=200,t_h=400,text_color="#666666",pulse=''):
 		self.screen=screen
@@ -75,37 +73,49 @@ class TextView():
 				self.text_lines.append(splitted_line)
 		
 		text_row=self.t_y
-		try:
-			global text_line_height
-			text_line_height=(self.text_font.size("")[1])
-			global total_text_line_height
-			total_text_line_height=text_line_height*(len(self.text_lines)-1)
-		except:
-			pass
+		
+		global CURRENT_PAGE,TOTAL_PAGE_NUMBER,RENDER_LINE_HEIGHT,START_LINE
+			
+		text_line_height=(self.text_font.size("")[1])
+		total_text_line_height=text_line_height*(len(self.text_lines))	
+		
+		t_h=total_text_line_height
+		EACH_PAGE_CAPACITY=h//text_line_height
+		TOTAL_LINE_NUMBER=len(self.text_lines)
+		TOTAL_PAGE_NUMBER=(TOTAL_LINE_NUMBER//EACH_PAGE_CAPACITY)+1
+		
+		if writing:
+			CURRENT_PAGE=TOTAL_PAGE_NUMBER
+			
+		else:
+			CURRENT_PAGE=CURRENT_PAGE
+		if CURRENT_PAGE==1:
+			START_LINE=1
+		elif TOTAL_PAGE_NUMBER-1>0:
+			START_LINE=(CURRENT_PAGE-1)*EACH_PAGE_CAPACITY
 
-
-		for line in self.text_lines:
+		END_LINE=CURRENT_PAGE*EACH_PAGE_CAPACITY
+		render_lines=self.text_lines[START_LINE-1:END_LINE]
+		RENDER_LINE_HEIGHT=text_line_height*len(render_lines)
+		
+		for line in render_lines:
 			if line != "":
 				text_surface = self.text_font.render(line, 1, self.text_color)
 				if all_select==True:
-					first_line=(self.text_font.render(self.text_lines[0], 1, self.text_color)).get_rect()
 					txt_rect=text_surface.get_rect()
 					txt_rect=(self.t_x,self.t_y,txt_rect[2],txt_rect[3])
-					pygame.draw.rect(screen,"#ccffcc",txt_rect)
+					pygame.draw.rect(self.screen,"#ccffcc",txt_rect)
 				self.screen.blit(text_surface, (self.t_x, self.t_y))
 			self.t_y +=self.text_font.size(line)[1]
+		
 
-			
 all_select=False
 game_running=True
 Next_line=False
 
-page=1
-
-constant_h=text_line_height
 while game_running:
 	clock.tick(60)
-	txt_surface=pygame.Surface((w,total_text_line_height+100))
+	pygame.draw.rect(screen,"#000000",(0,0,w,RENDER_LINE_HEIGHT+100))
 	for event in pygame.event.get():
 		if event.type==QUIT:
 			with open('UserData.pickle', 'wb') as data:
@@ -122,6 +132,7 @@ while game_running:
 		if event.type==pygame.VIDEORESIZE:
 			w,h=event.size
 		if event.type==pygame.TEXTINPUT:
+			CURRENT_PAGE=TOTAL_PAGE_NUMBER
 			txt+=event.text
 			all_select=False
 			
@@ -188,28 +199,25 @@ while game_running:
 						
 			elif event.key==pygame.K_RETURN:
 				Next_line=True
+				#print(txt)
 				
 			elif event.key==pygame.K_HOME:
 				writing=False
-				page=1
-				n=0
+				CURRENT_PAGE=1
 			elif event.key==pygame.K_PAGEUP:
 				writing=False
-				if 0<page<=total_page:
-					page-=1
-					n=-(page*(h))
+				if 1<CURRENT_PAGE<=TOTAL_PAGE_NUMBER:
+					CURRENT_PAGE-=1
+
 					
 			elif event.key==pygame.K_PAGEDOWN:
 				writing=False
-				if page<total_page:
-					page+=1
-					n=-(page*(h))
-					
+				if CURRENT_PAGE<TOTAL_PAGE_NUMBER:
+					CURRENT_PAGE+=1
+
 			elif event.key==pygame.K_END:
 				writing=False
-				page=total_page
-				n=-(page*(h))
-				
+				CURRENT_PAGE=TOTAL_PAGE_NUMBER
 	
 	now=time.time()
 	d=now-then
@@ -222,17 +230,6 @@ while game_running:
 		txt=txt+'\n'
 		Next_line=False
 	screen.fill('#242424')
-	TextView(txt_surface,text=txt,t_x=20,t_y=10,t_w=w-50,t_h=total_text_line_height+100,pulse=pulse,text_color='#696969')
-
-	t_h=total_text_line_height
-	n_p=t_h//h
-	total_page=n_p
-	if writing==True:	
-		if n_p>page:
-			page+=1
-			n=-(page*(h))
-		elif n_p<page:
-			page=n_p
-			n=-(page*(h))
-	screen.blit(txt_surface,(0,n))
+	pygame.draw.rect(screen,"#000000",(0,0,w,RENDER_LINE_HEIGHT+100))
+	TextView(screen,text=txt,t_x=20,t_y=10,t_w=w-50,t_h=RENDER_LINE_HEIGHT+100,pulse=pulse,text_color='#696969')
 	pygame.display.update()
