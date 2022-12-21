@@ -21,8 +21,6 @@ except:
 		txt=''
 		font_size=30
 		fullscreen=1
-		w=1000
-		h=650
 		all_data=[]
 		all_data.append(txt)
 		all_data.append(font_size)
@@ -98,7 +96,7 @@ while game_running:
 	pygame.draw.rect(screen,"#000000",(0,0,w,RENDER_LINE_HEIGHT+100))
 	for event in pygame.event.get():
 		if event.type==QUIT:
-			with open('UserData.pickle', 'wb') as data:
+			with open('TextData.pickle', 'wb') as data:
 				updateData=[]
 				updateData.append(txt)
 				updateData.append(font_size)
@@ -129,7 +127,7 @@ while game_running:
 					txt=''
 					all_select=False
 			if event.key==pygame.K_ESCAPE:
-				with open('UserData.pickle', 'wb') as data:
+				with open('TextData.pickle', 'wb') as data:
 					updateData=[]
 					updateData.append(txt)
 					updateData.append(font_size)
@@ -142,55 +140,40 @@ while game_running:
 				
 					
 			if event.key==pygame.K_a:
-				if event.mod == pygame.KMOD_NONE:
-					continue
-				else:
-					if event.mod & pygame.KMOD_LCTRL:
-						all_select=True
+				if event.mod & pygame.KMOD_LCTRL:
+					all_select=True
 			if event.key==pygame.K_z:
-				if event.mod == pygame.KMOD_NONE:
-					continue
-				else:
-					if event.mod & pygame.KMOD_LCTRL:
-						if font_size<70:
-							font_size+=10
-						else:
-							font_size=20	
+				if event.mod & pygame.KMOD_LCTRL:
+					if font_size<70:
+						font_size+=10
+					else:
+						font_size=20	
 
 			elif event.key==pygame.K_f:
-				if event.mod == pygame.KMOD_NONE:
-					continue
-				else:
-					if event.mod & pygame.KMOD_LCTRL:
-						if fullscreen==0:
-							fullscreen=1
-							screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
-						else:
-							screen=pygame.display.set_mode((w,h),RESIZABLE)
-							fullscreen=0
+				if event.mod & pygame.KMOD_LCTRL:
+					if fullscreen==0:
+						fullscreen=1
+						screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
+					else:
+						screen=pygame.display.set_mode((w,h),RESIZABLE)
+						fullscreen=0
 
 
 			elif event.key==pygame.K_v:
-				if event.mod == pygame.KMOD_NONE:
-					continue
-				else:
-					if event.mod & pygame.KMOD_LCTRL:
-						pygame.scrap.init()
-						text=pygame.scrap.get("text/plain")
-						if text:
-							text=(text.decode('ascii', 'ignore'))
-							text=text[:-1]
-							txt=txt+text
+				if event.mod & pygame.KMOD_LCTRL:
+					pygame.scrap.init()
+					text=pygame.scrap.get("text/plain")
+					if text:
+						text=(text.decode('ascii', 'ignore'))
+						text=text[:-1]
+						txt=txt+text
 
 							
 			elif event.key==pygame.K_c:
-				if event.mod == pygame.KMOD_NONE:
-					continue
-				else:
-					if event.mod & pygame.KMOD_LCTRL:
-						pygame.scrap.init()
-						txt_clipboard=bytes(txt, 'utf-8')
-						pygame.scrap.put(pygame.SCRAP_TEXT, txt_clipboard)
+				if event.mod & pygame.KMOD_LCTRL:
+					pygame.scrap.init()
+					txt_clipboard=bytes(txt, 'utf-8')
+					pygame.scrap.put(pygame.SCRAP_TEXT, txt_clipboard)
 						
 						
 			elif event.key==pygame.K_RETURN:
