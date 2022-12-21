@@ -118,6 +118,7 @@ while game_running:
 			
 		if event.type==pygame.KEYDOWN:
 			if event.key==pygame.K_BACKSPACE:
+				#CURRENT_PAGE=TOTAL_PAGE_NUMBER
 				pygame.key.set_repeat(200,5)
 				if len(txt)==0:
 					pass
