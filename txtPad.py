@@ -4,17 +4,9 @@
 import pickle
 import pygame,sys,time
 from pygame.locals import*
+import render
 pygame.init()
 clock=pygame.time.Clock()
-w=1000
-h=650
-
-
-screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
-#screen=pygame.display.set_mode((w,h),pygame.NOFRAME)
-#screen=pygame.display.set_mode((w,h),RESIZABLE)
-pygame.display.set_caption("txtPad")
-
 then=time.time()
 
 pulse='|'
@@ -27,17 +19,31 @@ except:
 	#Write Data
 	with open('UserData.pickle', 'wb') as data:
 		txt=''
-		font_size=32
+		font_size=30
+		fullscreen=0
+		w=1000
+		h=650
 		all_data=[]
 		all_data.append(txt)
 		all_data.append(font_size)
+		all_data.append(fullscreen)
 		pickle.dump(txt, data)
 		data.close()
 
 
+
+print(all_data)
 txt=all_data[0]
 font_size=all_data[1]
-pygame.mouse.set_visible(1)
+fullscreen=all_data[2]
+w=1000
+h=650
+if fullscreen==0:
+	screen=pygame.display.set_mode((w,h),RESIZABLE)
+elif fullscreen==1:
+	screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
+pygame.display.set_caption("txtPad")
+#pygame.mouse.set_visible(1)
 writing=True
 
 
@@ -55,25 +61,8 @@ class TextView():
 		self.text_color=text_color 
 		self.text=text+pulse
 		self.text_font=pygame.font.Font('Prata-Regular.ttf',font_size)
-		self.text_lines=[]
-		self.splitted_lines=self.text.splitlines()
-		for splitted_line in self.splitted_lines:
-			if self.text_font.size(splitted_line)[0] > self.t_w:
-				words = splitted_line.split(' ')
-				fitted_line=""
-				for word in words:
-					test_line = fitted_line + word + " "
-					if self.text_font.size(test_line)[0] < self.t_w:
-						fitted_line = test_line
-					else:
-						self.text_lines.append(fitted_line)
-						fitted_line = word + " "
-				self.text_lines.append(fitted_line)
-			else:
-				self.text_lines.append(splitted_line)
-		
-		text_row=self.t_y
-		
+		self.text_lines=render.render_text_list(self.text,t_w,self.text_font)
+
 		global CURRENT_PAGE,TOTAL_PAGE_NUMBER,RENDER_LINE_HEIGHT,START_LINE
 			
 		text_line_height=(self.text_font.size("")[1])
@@ -97,16 +86,7 @@ class TextView():
 		END_LINE=CURRENT_PAGE*EACH_PAGE_CAPACITY
 		render_lines=self.text_lines[START_LINE-1:END_LINE]
 		RENDER_LINE_HEIGHT=text_line_height*len(render_lines)
-		
-		for line in render_lines:
-			if line != "":
-				text_surface = self.text_font.render(line, 1, self.text_color)
-				if all_select==True:
-					txt_rect=text_surface.get_rect()
-					txt_rect=(self.t_x,self.t_y,txt_rect[2],txt_rect[3])
-					pygame.draw.rect(self.screen,"#ccffcc",txt_rect)
-				self.screen.blit(text_surface, (self.t_x, self.t_y))
-			self.t_y +=self.text_font.size(line)[1]
+		render.render_lines(self.screen,render_lines,self.text_font,self.t_x,self.t_y,self.text_color,all_select)
 		
 
 all_select=False
@@ -122,6 +102,7 @@ while game_running:
 				updateData=[]
 				updateData.append(txt)
 				updateData.append(font_size)
+				updateData.append(fullscreen)
 				pickle.dump(updateData, data)
 				data.close()
 			time.sleep(.2)
@@ -152,6 +133,7 @@ while game_running:
 					updateData=[]
 					updateData.append(txt)
 					updateData.append(font_size)
+					updateData.append(fullscreen)
 					pickle.dump(updateData, data)
 					data.close()
 				pygame.display.iconify()
@@ -171,9 +153,23 @@ while game_running:
 				else:
 					if event.mod & pygame.KMOD_LCTRL:
 						if font_size<70:
-							font_size+=5
+							font_size+=10
 						else:
-							font_size=22	
+							font_size=20	
+
+			elif event.key==pygame.K_f:
+				if event.mod == pygame.KMOD_NONE:
+					continue
+				else:
+					if event.mod & pygame.KMOD_LCTRL:
+						if fullscreen==0:
+							fullscreen=1
+							screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
+						else:
+							screen=pygame.display.set_mode((w,h),RESIZABLE)
+							fullscreen=0
+
+
 			elif event.key==pygame.K_v:
 				if event.mod == pygame.KMOD_NONE:
 					continue
@@ -199,8 +195,6 @@ while game_running:
 						
 			elif event.key==pygame.K_RETURN:
 				Next_line=True
-				#print(txt)
-				
 			elif event.key==pygame.K_HOME:
 				writing=False
 				CURRENT_PAGE=1
