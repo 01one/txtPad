@@ -12,15 +12,15 @@ then=time.time()
 pulse='|'
 try:
 	#Read Data
-	with open('UserData.pickle', 'rb') as data:
+	with open('TextData.pickle', 'rb') as data:
 		all_data= pickle.load(data)
 		data.close()
 except:
 	#Write Data
-	with open('UserData.pickle', 'wb') as data:
+	with open('TextData.pickle', 'wb') as data:
 		txt=''
 		font_size=30
-		fullscreen=0
+		fullscreen=1
 		w=1000
 		h=650
 		all_data=[]
