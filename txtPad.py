@@ -142,7 +142,6 @@ while game_running:
 						font_size=20	
 
 
-
 			elif event.key==pygame.K_v:
 				if event.mod & pygame.KMOD_LCTRL:
 					pygame.scrap.init()
