@@ -20,26 +20,19 @@ except:
 	with open('TextData.pickle', 'wb') as data:
 		txt=''
 		font_size=30
-		fullscreen=1
 		all_data=[]
 		all_data.append(txt)
 		all_data.append(font_size)
-		all_data.append(fullscreen)
 		pickle.dump(txt, data)
 		data.close()
 
 
-
-print(all_data)
 txt=all_data[0]
 font_size=all_data[1]
-fullscreen=all_data[2]
 w=1000
 h=650
-if fullscreen==0:
-	screen=pygame.display.set_mode((w,h),RESIZABLE)
-elif fullscreen==1:
-	screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
+#screen=pygame.display.set_mode((w,h),RESIZABLE)
+screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
 pygame.display.set_caption("txtPad")
 #pygame.mouse.set_visible(1)
 writing=True
@@ -100,7 +93,6 @@ while game_running:
 				updateData=[]
 				updateData.append(txt)
 				updateData.append(font_size)
-				updateData.append(fullscreen)
 				pickle.dump(updateData, data)
 				data.close()
 			time.sleep(.2)
@@ -132,7 +124,6 @@ while game_running:
 					updateData=[]
 					updateData.append(txt)
 					updateData.append(font_size)
-					updateData.append(fullscreen)
 					pickle.dump(updateData, data)
 					data.close()
 				pygame.display.iconify()
@@ -150,14 +141,6 @@ while game_running:
 					else:
 						font_size=20	
 
-			elif event.key==pygame.K_f:
-				if event.mod & pygame.KMOD_LCTRL:
-					if fullscreen==0:
-						fullscreen=1
-						screen=pygame.display.set_mode((w,h),FULLSCREEN|HWSURFACE)
-					else:
-						screen=pygame.display.set_mode((w,h),RESIZABLE)
-						fullscreen=0
 
 
 			elif event.key==pygame.K_v:
