@@ -1,7 +1,8 @@
-#  Copyright 2022 Mahid
+#  Copyright 2022-2023 Mahid
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY
 import pickle
+import os
 import pygame,sys,time
 from pygame.locals import*
 pygame.init()
@@ -9,12 +10,20 @@ clock=pygame.time.Clock()
 then=time.time()
 
 pulse='|'
+
+
+path = os.path.expanduser('~\Documents\\01one\ txtPad\TaskData.pickle')
+
+
 try:
-	with open('TextData.pickle', 'rb') as data:
+	with open(path, 'rb') as data:
 		all_data= pickle.load(data)
 		data.close()
 except:
-	with open('TextData.pickle', 'wb') as data:
+	text_data=os.path.expanduser('~\Documents\\01one\ txtPad')
+	if not os.path.exists(text_data):
+		os.makedirs(text_data)
+	with open(path, 'wb') as data:
 		txt=''
 		font_size=30
 		all_data=[]
@@ -121,7 +130,7 @@ while game_running:
 	pygame.draw.rect(screen,"#000000",(0,0,w,RENDER_LINE_HEIGHT+100))
 	for event in pygame.event.get():
 		if event.type==QUIT:
-			with open('TextData.pickle', 'wb') as data:
+			with open(path, 'wb') as data:
 				updateData=[]
 				updateData.append(txt)
 				updateData.append(font_size)
@@ -152,7 +161,7 @@ while game_running:
 					all_select=False
 				CURRENT_PAGE=TOTAL_PAGE_NUMBER
 			if event.key==pygame.K_ESCAPE:
-				with open('TextData.pickle', 'wb') as data:
+				with open(path, 'wb') as data:
 					updateData=[]
 					updateData.append(txt)
 					updateData.append(font_size)
