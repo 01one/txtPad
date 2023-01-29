@@ -122,10 +122,9 @@ class TextView():
 		
 
 all_select=False
-game_running=True
 Next_line=False
 
-while game_running:
+while 1:
 	clock.tick(60)
 	pygame.draw.rect(screen,"#000000",(0,0,w,RENDER_LINE_HEIGHT+100))
 	for event in pygame.event.get():
