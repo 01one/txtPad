@@ -50,6 +50,7 @@ RENDER_LINE_HEIGHT=100
 START_LINE=1
 
 text_font=pygame.font.Font('Prata-Regular.ttf',font_size)
+pygame.mouse.set_visible(False)
 
 def render_text_list(text,t_w,text_font):
 	text_lines=[]
