@@ -196,7 +196,7 @@ while 1:
 			elif event.key==pygame.K_c:
 				if event.mod & pygame.KMOD_LCTRL:
 					pygame.scrap.init()
-					txt_clipboard=bytes(txt, 'utf-8')
+					txt_clipboard=bytes(txt+' ', 'utf-8')
 					pygame.scrap.put(pygame.SCRAP_TEXT, txt_clipboard)
 						
 						
