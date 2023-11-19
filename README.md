@@ -4,5 +4,6 @@
 
 # Readable and fluent typing
 
-## Also developed a lite web version of this program
+## Also developed a lite web version of this program.
+Automatically saved in the web browser.
 https://purnorup.com/txtPad.html
