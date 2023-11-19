@@ -3,3 +3,6 @@
 ![](https://github.com/01one/txtPad/blob/main/presentation/logo.png)
 
 # Readable and fluent typing
+
+## Also developed a lite web version of this program
+https://purnorup.com/txtPad.html
