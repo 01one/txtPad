@@ -8,5 +8,3 @@
 Automatically saved in the web browser.
 https://purnorup.com/txtPad.html
 
-Account Based txtpad( Continue with google)
-https://txtpad.purnorup.com
